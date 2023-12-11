@@ -1,66 +1,50 @@
 package fr.pantheonsorbonne.miage.engine;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import fr.pantheonsorbonne.miage.Cartes.Card;
+import org.junit.jupiter.api.Test;  // Assurez-vous d'importer la bonne annotation Test
+import fr.pantheonsorbonne.miage.Cartes.Card;  // Ajoutez cette ligne d'importation
 import fr.pantheonsorbonne.miage.Cartes.CardColor;
 import fr.pantheonsorbonne.miage.Cartes.CardValue;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class CardTest {
+
+    // ...
 
     @Test
     void testIsPetit() {
-        Card petitCard = new Card(CardColor.ATOUT, CardValue.AS);
-        assertTrue(petitCard.isPetit());
+        Card petit = new Card(CardColor.ATOUT, CardValue.AS);
+        assertTrue(petit.isPetit());
 
-        Card notPetitCard = new Card(CardColor.ATOUT, CardValue.DIX);
-        assertFalse(notPetitCard.isPetit());
+        Card nonPetit = new Card(CardColor.ATOUT, CardValue.DEUX);
+        assertFalse(nonPetit.isPetit());
     }
 
     @Test
     void testIsBout() {
-        // Ajoutez des tests similaires pour la méthode isBout()
+        Card excuseCard = new Card(CardColor.EXCUSE, CardValue.EXCUSE);
+        assertTrue(excuseCard.isBout(), "Excuse devrait être un bout");
+
+        Card asAtoutCard = new Card(CardColor.ATOUT, CardValue.AS);
+        assertTrue(asAtoutCard.isBout(), "AS d'atout devrait être un bout");
+
+        Card vingtEtUnCard = new Card(CardColor.ATOUT, CardValue.VINGT_ET_UN);
+        assertTrue(vingtEtUnCard.isBout(), "VINGT_ET_UN d'atout devrait être un bout");
+
+        // Ajoutez d'autres cas de test pour isBout() si nécessaire
     }
 
     @Test
     void testIsKing() {
-        // Ajoutez des tests similaires pour la méthode isKing()
+        Card kingCard = new Card(CardColor.CLUBS, CardValue.ROI);
+        assertTrue(kingCard.isKing(), "Carte ROI devrait être un roi");
+
+        Card notKingCard = new Card(CardColor.CLUBS, CardValue.DIX);
+        assertFalse(notKingCard.isKing(), "Carte DIX ne devrait pas être un roi");
+
+        // Ajoutez d'autres cas de test pour isKing() si nécessaire
     }
 
-    @Test
-    void testIsQueen() {
-        // Ajoutez des tests similaires pour la méthode isQueen()
-    }
-
-    @Test
-    void testIsValet() {
-        // Ajoutez des tests similaires pour la méthode isValet()
-    }
-
-    @Test
-    void testIsCavalier() {
-        // Ajoutez des tests similaires pour la méthode isCavalier()
-    }
-
-    @Test
-    void testIsPetiteCarte() {
-        // Ajoutez des tests similaires pour la méthode isPetiteCarte()
-    }
-
-    @Test
-    void testCardsToString() {
-        // Ajoutez des tests similaires pour la méthode cardsToString()
-    }
-
-    @Test
-    void testCreateTarotDeck() {
-        // Ajoutez des tests similaires pour la méthode createTarotDeck()
-    }
-
-    @Test
-    void testCompareTo() {
-        // Ajoutez des tests similaires pour la méthode compareTo()
-    }
+    // ...
 }
