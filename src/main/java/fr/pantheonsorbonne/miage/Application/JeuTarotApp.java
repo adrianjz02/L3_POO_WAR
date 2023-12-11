@@ -20,7 +20,7 @@ public class JeuTarotApp extends TarotEngine {
     private final Map<String, Queue<Card>> playerCards = new HashMap<>();
     private static Scanner scanner = new Scanner(System.in);
     
-    protected JeuTarotApp(Deck deck, List<String> playerNames, int nombreDeManche) {
+    public JeuTarotApp(Deck deck, List<String> playerNames, int nombreDeManche) {
         super(deck, nombreDeManche);
         this.initialPlayers = new ArrayList<>();
         for (String playerName : playerNames) {
@@ -53,7 +53,7 @@ public class JeuTarotApp extends TarotEngine {
     }
 
     @Override
-    protected List<Player> getInitialPlayers() {
+    public List<Player> getInitialPlayers() {
         return this.initialPlayers;
     }
 
