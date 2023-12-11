@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -614,13 +615,56 @@ public class TarotEngineTest {
     }
 
 
+    @Test
+    public void testSeDefausser() {
+        // Créer une liste de cartes pour le joueur, incluant un Bout et un Roi
+        List<Card> hand = new ArrayList<>();
+        hand.add(new Card(CardColor.ATOUT, CardValue.AS)); // Bout
+        hand.add(new Card(CardColor.ATOUT, CardValue.DEUX)); // Atout ordinaire
+        hand.add(new Card(CardColor.HEARTS, CardValue.ROI)); // Roi
+        MockPlayer joueur = new MockPlayer("Joueur", hand);
+
+        // Créer une liste pour recevoir les cartes défaussées
+        List<Card> pliJoueur = new ArrayList<>();
+
+        // Simuler le processus de défausse sans interaction utilisateur
+        joueur.setDefausseSimulation(new Card[] {
+            new Card(CardColor.ATOUT, CardValue.DEUX), // Prétend que le joueur choisit un atout ordinaire à défausser
+            // Notez que l'ordre des cartes à défausser est important si vous répétez des cartes
+        });
+
+        // Exécuter la méthode de défausse
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1); // Utilisez votre implémentation concrète avec les dépendances nécessaires
+        tarotEngine.seDefausser(joueur, 1, pliJoueur, new Scanner(System.in));
+
+        // Vérifier les résultats
+        assertEquals(1, pliJoueur.size(), "Une carte doit être défaussée");
+        assertTrue(pliJoueur.contains(new Card(CardColor.ATOUT, CardValue.DEUX)), "La carte défaussée doit être l'Atout DEUX");
+        assertFalse(joueur.getHand().contains(new Card(CardColor.ATOUT, CardValue.DEUX)), "Le joueur ne doit plus avoir l'Atout DEUX");
+    }
     // Classe MockPlayer pour simuler un joueur
     private static class MockPlayer extends Player {
         private List<Card> hand;
+        private Card[] defausseSimulation;
 
         public MockPlayer(String name, List<Card> hand) {
             super(name);
             this.hand = hand;
+        }
+
+        public void setDefausseSimulation(Card[] defausseSimulation) {
+            this.defausseSimulation = defausseSimulation;
+        }
+
+        @Override
+        public Card choisirUneCarteADefausser() {
+            // Simule le choix d'une carte à défausser selon l'ordre prédéfini
+            if (defausseSimulation.length > 0) {
+                Card carte = defausseSimulation[0];
+                defausseSimulation = Arrays.copyOfRange(defausseSimulation, 1, defausseSimulation.length);
+                return carte;
+            }
+            return null;
         }
 
 
@@ -656,6 +700,7 @@ public class TarotEngineTest {
             return hand.size();
         }
     }
+
 
     private static class TarotEngineImpl extends TarotEngine {
         public TarotEngineImpl(Deck deck, int nombreDeManche) {
