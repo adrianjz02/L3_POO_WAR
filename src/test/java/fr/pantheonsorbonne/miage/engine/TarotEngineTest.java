@@ -584,6 +584,79 @@ public class TarotEngineTest {
         }
     }
 
+    @Test
+    public void testVerifExcuseAuBoutAttaquant() {
+        // Création des joueurs et initialisation des plis
+        Player attaquant = new Player("Attaquant");
+        Player defenseur1 = new Player("Defenseur1");
+        Player defenseur2 = new Player("Defenseur2");
+        Player gagnantDernierPli = attaquant; // Simule que l'attaquant a gagné le dernier pli
+        List<Player> playerList = new ArrayList<>(); // Ajoutez tous les joueurs si nécessaire
+
+        playerList.add(attaquant);
+        playerList.add(defenseur1);
+        playerList.add(defenseur2);
+
+        // Création des plis avec l'Excuse présente
+        List<Card> deckPliAttaquant = new ArrayList<>();
+        deckPliAttaquant.add(new Card(CardColor.EXCUSE, CardValue.EXCUSE)); // Ajoute l'Excuse
+        deckPliAttaquant.add(new Card(CardColor.SPADES, CardValue.ROI)); // Autre carte
+        deckPliAttaquant.add(new Card(CardColor.DIAMONDS, CardValue.REINE)); // Autre carte
+
+        List<Card> deckPliDefenseur = new ArrayList<>();
+        deckPliDefenseur.add(new Card(CardColor.ATOUT, CardValue.DEUX)); // Ajoute l'Excuse
+        deckPliDefenseur.add(new Card(CardColor.SPADES, CardValue.DEUX)); // Autre carte
+        deckPliDefenseur.add(new Card(CardColor.DIAMONDS, CardValue.CAVALIER)); // Autre carte
+
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
+
+        // Exécution de la méthode
+        tarotEngine.verifExcuseAuBout(playerList.size(), attaquant, gagnantDernierPli, playerList, deckPliAttaquant,
+                deckPliDefenseur);
+
+        // Vérifications
+        assertFalse(deckPliAttaquant.contains(new Card(CardColor.EXCUSE, CardValue.EXCUSE)),
+                "Le pli de l'attaquant ne doit pas contenir l'Excuse");
+        assertTrue(deckPliDefenseur.contains(new Card(CardColor.EXCUSE, CardValue.EXCUSE)),
+                "Le pli des défenseurs doit contenir l'Excuse");
+    }
+
+    @Test
+    public void testVerifExcuseAuBoutDefenseurs() {
+        // Créez les joueurs et initialisation des plis
+        Player attaquant = new Player("Attaquant");
+        Player defenseur1 = new Player("Defenseur1");
+        Player defenseur2 = new Player("Defenseur2");
+        Player gagnantDernierPli = defenseur1; // Simule que le défenseur 1 a gagné le dernier pli
+        List<Player> playerList = new ArrayList<>(); // Ajoutez tous les joueurs si nécessaire
+
+        playerList.add(attaquant);
+        playerList.add(defenseur1);
+        playerList.add(defenseur2);
+
+        // Création des plis avec l'Excuse présente
+        List<Card> deckPliAttaquant = new ArrayList<>();
+        deckPliAttaquant.add(new Card(CardColor.HEARTS, CardValue.DIX)); // Autre carte
+        deckPliAttaquant.add(new Card(CardColor.DIAMONDS, CardValue.VALET)); // Autre carte
+
+        List<Card> deckPliDefenseur = new ArrayList<>();
+        deckPliDefenseur.add(new Card(CardColor.EXCUSE, CardValue.EXCUSE)); // Ajoute l'Excuse
+        deckPliDefenseur.add(new Card(CardColor.SPADES, CardValue.ROI)); // Autre carte
+        deckPliDefenseur.add(new Card(CardColor.CLUBS, CardValue.REINE)); // Autre carte
+
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
+
+        // Exécution de la méthode
+        tarotEngine.verifExcuseAuBout(playerList.size(), attaquant, gagnantDernierPli, playerList, deckPliAttaquant,
+                deckPliDefenseur);
+
+        // Vérifications
+        assertTrue(deckPliAttaquant.contains(new Card(CardColor.EXCUSE, CardValue.EXCUSE)),
+                "Le pli de l'attaquant doit contenir l'Excuse");
+        assertFalse(deckPliDefenseur.contains(new Card(CardColor.EXCUSE, CardValue.EXCUSE)),
+                "Le pli des défenseurs ne doit pas contenir l'Excuse");
+    }
+
     private static class TarotEngineImpl extends TarotEngine {
         public TarotEngineImpl(Deck deck, int nombreDeManche) {
             super(deck, nombreDeManche);
