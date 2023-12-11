@@ -44,7 +44,7 @@ public class JeuTarotReseauLocal extends TarotEngine {
     }
 
     @Override
-    protected List<Player> getInitialPlayers() {
+    public List<Player> getInitialPlayers() {
         return this.initialPlayers;
     }
 
