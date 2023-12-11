@@ -3,7 +3,6 @@ package fr.pantheonsorbonne.miage.engine;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -542,48 +540,6 @@ public class TarotEngineTest {
                 "Le pli du défenseur doit contenir l'Excuse");
     }
 
-    // Classe MockPlayer pour simuler un joueur
-    private static class MockPlayer extends Player {
-        private List<Card> hand;
-
-        public MockPlayer(String name, List<Card> hand) {
-            super(name);
-            this.hand = hand;
-        }
-
-        @Override
-        public Card choisirUneCarte() {
-            // Assurez-vous qu'il y a des cartes à choisir
-            if (!hand.isEmpty()) {
-                // Simule le choix de la carte Excuse si présente, sinon la première carte
-                return hand.stream()
-                        .filter(card -> card.color() == CardColor.EXCUSE && card.value() == CardValue.EXCUSE)
-                        .findFirst()
-                        .orElse(hand.remove(0)); // Retire et retourne la première carte
-            } else {
-                // Retourne null ou lance une exception personnalisée si la main est vide
-                return null;
-            }
-        }
-
-        @Override
-        public boolean checkColor(CardColor color) {
-            // Vérifie si le joueur a une carte de la couleur demandée
-            return hand.stream().anyMatch(card -> card.color() == color);
-        }
-
-        @Override
-        public boolean removeCardFromHand(Card card) {
-            return hand.remove(card);
-        }
-
-        @Override
-        public int getLength() {
-            // Retourne la taille de la main
-            return hand.size();
-        }
-    }
-
     @Test
     public void testVerifExcuseAuBoutAttaquant() {
         // Création des joueurs et initialisation des plis
@@ -655,6 +611,50 @@ public class TarotEngineTest {
                 "Le pli de l'attaquant doit contenir l'Excuse");
         assertFalse(deckPliDefenseur.contains(new Card(CardColor.EXCUSE, CardValue.EXCUSE)),
                 "Le pli des défenseurs ne doit pas contenir l'Excuse");
+    }
+
+
+    // Classe MockPlayer pour simuler un joueur
+    private static class MockPlayer extends Player {
+        private List<Card> hand;
+
+        public MockPlayer(String name, List<Card> hand) {
+            super(name);
+            this.hand = hand;
+        }
+
+
+        @Override
+        public Card choisirUneCarte() {
+            // Assurez-vous qu'il y a des cartes à choisir
+            if (!hand.isEmpty()) {
+                // Simule le choix de la carte Excuse si présente, sinon la première carte
+                return hand.stream()
+                        .filter(card -> card.color() == CardColor.EXCUSE && card.value() == CardValue.EXCUSE)
+                        .findFirst()
+                        .orElse(hand.remove(0)); // Retire et retourne la première carte
+            } else {
+                // Retourne null si la main est vide
+                return null;
+            }
+        }
+
+        @Override
+        public boolean checkColor(CardColor color) {
+            // Vérifie si le joueur a une carte de la couleur demandée
+            return hand.stream().anyMatch(card -> card.color() == color);
+        }
+
+        @Override
+        public boolean removeCardFromHand(Card card) {
+            return hand.remove(card);
+        }
+
+        @Override
+        public int getLength() {
+            // Retourne la taille de la main
+            return hand.size();
+        }
     }
 
     private static class TarotEngineImpl extends TarotEngine {
