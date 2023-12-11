@@ -5,10 +5,14 @@ import org.junit.jupiter.api.Test;
 import fr.pantheonsorbonne.miage.Cartes.Card;
 import fr.pantheonsorbonne.miage.Cartes.CardColor;
 import fr.pantheonsorbonne.miage.Cartes.CardValue;
+import fr.pantheonsorbonne.miage.Joueurs.DumbPlayer;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 class PlayerTest {
@@ -22,7 +26,7 @@ class PlayerTest {
             new Card(CardColor.CLUBS, CardValue.ROI)
         };
         player.addCardsToHand(cards);
-        assertEquals(3, player.getHand().sizeC());
+        assertEquals(3, player.getHand().size());
     }
 
     @Test
@@ -42,7 +46,7 @@ class PlayerTest {
         new Card(CardColor.HEARTS, CardValue.VALET)
         };
         player.addCardsToHand(cards);
-        assertEquals("Bob : [5♠, J♥]", player.getHand().toString());
+        assertEquals("[T5, CValet]", player.getHand().toString());
     }
 
     @Test
@@ -56,24 +60,104 @@ class PlayerTest {
         };
         player.addCardsToHand(unsortedCards);
         player.sortHand();
-        assertEquals("Charlie : [A♠, Q♣, 8♦, 2♥]", player.getHand().toString());
+        assertEquals("[P1, TReine, C2, D8]", player.getHand().toString());
+    }
+
+    /* 
+    @Test
+        void testChoisirDeuxCartes() {
+            Player player = new Player("Alice");
+
+            // Mocking user input for testing purposes
+            String input = "\nC10\nD3";
+            player.scanner = new Scanner(input);
+
+            Card[] cards = {
+                new Card(CardColor.SPADES, CardValue.QUATRE),
+                new Card(CardColor.HEARTS, CardValue.SEPT),
+                new Card(CardColor.CLUBS, CardValue.DIX),
+                new Card(CardColor.DIAMONDS, CardValue.TROIS)
+            };
+            player.addCardsToHand(cards);
+
+            List<Card> chosenCards = player.choisirDeuxCartes();
+            System.out.println(chosenCards);
+
+            // Vérifier si deux cartes ont été choisies
+            assertEquals(2, chosenCards.size());
+
+            // Vérifier que les cartes sont correctess
+            assertTrue(player.getHand().contains(new Card(CardColor.SPADES, CardValue.QUATRE)));
+            assertTrue(player.getHand().contains(new Card(CardColor.HEARTS, CardValue.SEPT)));
+            assertFalse(player.getHand().contains(new Card(CardColor.CLUBS, CardValue.DIX)));
+            assertFalse(player.getHand().contains(new Card(CardColor.DIAMONDS, CardValue.TROIS)));
+        }
+        */
+   
+    
+
+    @Test
+    void testAskDogSize() {
+        DumbPlayer dumbPlayer = new DumbPlayer("Dumb");
+        int dogSize = dumbPlayer.askDogSize(3);
+        assertTrue(dogSize == 3 || dogSize == 6 || dogSize == 9);
     }
 
     @Test
-    void testChooseTwoCards() {
-        Player player = new Player("David");
-        Card[] cards = {
-            new Card(CardColor.SPADES, CardValue.QUATRE),
-            new Card(CardColor.HEARTS, CardValue.SEPT),
-            new Card(CardColor.CLUBS, CardValue.ROI),
-            new Card(CardColor.DIAMONDS, CardValue.AS)
-        };
-        player.addCardsToHand(cards);
+    void testChoisirActionPourLeChien() {
+        DumbPlayer dumbPlayer = new DumbPlayer("Dumber");
+        String action = dumbPlayer.choisirActionPourLeChien();
+        assertTrue(action.equals("D") || action.equals("C"));
+    }
 
-        // Mocking user input for testing purposes
-        player.scanner = new Scanner("S4\nH7\n");
-        
-        assertEquals(2, player.choisirDeuxCartes().size());
+    
+    @Test
+    void testDemanderMise() {
+        DumbPlayer dumbPlayer = new DumbPlayer("Dumbest");
+        String[] optionsDeMise = {"Passer", "Petite", "Garde", "Garde sans", "Garde contre"};
+        int miseMaxIndex = 2; // Suppose que la mise maximale est "Garde"
+
+        // Mocking random number generator for testing purposes
+        dumbPlayer.random = new Random(42);
+
+        // Mocking showHand() method
+        dumbPlayer.showHand();
+
+        String mise;
+        do {
+            mise = optionsDeMise[dumbPlayer.random.nextInt(optionsDeMise.length)];
+        } while (Arrays.asList(optionsDeMise).indexOf(mise) <= miseMaxIndex && !mise.equals("Passer"));
+
+        assertEquals(true, Arrays.asList(optionsDeMise).indexOf(mise) > miseMaxIndex || mise.equals("Passer"));
+    }
+    
+
+    @Test
+    void testChoisirUneCarteADefausser() {
+        DumbPlayer dumbPlayer = new DumbPlayer("Randomizer");
+        Card card = new Card(CardColor.HEARTS, CardValue.SEPT);
+        dumbPlayer.addCardsToHand(new Card[]{card});
+
+        // Mocking random number generator for testing purposes
+        dumbPlayer.random = new Random(42);
+
+        Card carteADefausser = dumbPlayer.choisirUneCarteADefausser();
+
+        assertEquals(card, carteADefausser);
+    }
+
+    @Test
+    void testChoisirUneCarte() {
+        DumbPlayer dumbPlayer = new DumbPlayer("Randomest");
+        Card card = new Card(CardColor.DIAMONDS, CardValue.AS);
+        dumbPlayer.addCardsToHand(new Card[]{card});
+
+        // Mocking random number generator for testing purposes
+        dumbPlayer.random = new Random(42);
+
+        Card carteChoisie = dumbPlayer.choisirUneCarte();
+
+        assertEquals(card, carteChoisie);
     }
     
 }

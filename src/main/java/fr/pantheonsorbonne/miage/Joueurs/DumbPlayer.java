@@ -6,7 +6,13 @@ import fr.pantheonsorbonne.miage.Cartes.Card;
 
 public class DumbPlayer extends Player {
 
+<<<<<<< HEAD
     private Random random = new Random();
+=======
+    public Random random = new Random();
+    
+
+>>>>>>> dbe0a58425b7f9ca00ebf58d9a2c88171a2254a1
 
     public DumbPlayer(String name) {
         super(name);

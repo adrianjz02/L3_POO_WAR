@@ -791,6 +791,6 @@ public abstract class TarotEngine {
         }
     }
 
-    protected abstract List<Player> getInitialPlayers();
+    public abstract List<Player> getInitialPlayers();
 
 }

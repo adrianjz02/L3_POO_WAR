@@ -1,6 +1,7 @@
 package fr.pantheonsorbonne.miage.Application;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -8,15 +9,20 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.pantheonsorbonne.miage.Deck.RandomDeck;
+import fr.pantheonsorbonne.miage.JeuTarot.TarotEngine;
+import fr.pantheonsorbonne.miage.Joueurs.DumbPlayer;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
 public class JeuTarotAppTest {
+
+    
 
     private JeuTarotApp jeuTarotApp;
 
@@ -40,6 +46,41 @@ public class JeuTarotAppTest {
             assertNotNull(player);
         }
     }
+
+    @Test
+    void testJeuTarotReseauLocalConstructor() {
+        TarotEngine jeuTarotReseauLocal = new JeuTarotReseauLocal(new RandomDeck(),
+                Arrays.asList("Adrian", "Nino", "Nicolas", "Banane"), 50);
+
+        assertNotNull(jeuTarotReseauLocal.getInitialPlayers());
+        assertEquals(4, jeuTarotReseauLocal.getInitialPlayers().size());
+    }
+
+    @Test
+    void testJeuTarotReseauLocalInitialization() {
+        // Créer une instance de JeuTarotReseauLocal avec un jeu de cartes aléatoire et 3 joueurs
+        JeuTarotReseauLocal jeuTarotReseauLocal = new JeuTarotReseauLocal(new RandomDeck(), Arrays.asList("Player1", "Player2", "Player3"), 3);
+
+        // Vérifier que l'initialisation a réussi
+        assertNotNull(jeuTarotReseauLocal);
+        assertNotNull(jeuTarotReseauLocal.getInitialPlayers());
+        assertEquals(3, jeuTarotReseauLocal.getInitialPlayers().size());
+    }
+
+    /* 
+    @Test
+    void testPlayMethod() {
+        // Simuler trois tours de jeu
+        for (int i = 0; i < 3; i++) {
+            jeuTarotApp.play(); // Assuming play() method performs game logic
+        }
+
+        for (Player player : jeuTarotApp.getInitialPlayers()) {
+            assertEquals(3, player.getHand().size());
+        }
+    }
+    */
+    
 
 /* 
     @Test
