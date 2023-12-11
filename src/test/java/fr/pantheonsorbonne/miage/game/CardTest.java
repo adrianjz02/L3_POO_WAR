@@ -13,7 +13,6 @@ import fr.pantheonsorbonne.miage.Cartes.CardValue;
 
 class CardTest {
 
-    // ...
 
     @Test
     void testIsPetit() {
