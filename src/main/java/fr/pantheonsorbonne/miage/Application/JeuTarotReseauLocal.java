@@ -37,7 +37,7 @@ public class JeuTarotReseauLocal extends TarotEngine {
     }
 
     public static void main(String... args) {
-        TarotEngine localTarotGame = new JeuTarotReseauLocal(new RandomDeck(), Arrays.asList("Adrian", "Nino", "Nicolas"),
+        TarotEngine localTarotGame = new JeuTarotReseauLocal(new RandomDeck(), Arrays.asList("Adrian", "Nino", "Nicolas", "Banane"),
                 50);
         localTarotGame.play();
         System.exit(0);

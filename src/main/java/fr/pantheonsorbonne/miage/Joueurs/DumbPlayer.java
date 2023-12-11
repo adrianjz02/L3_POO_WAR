@@ -7,6 +7,8 @@ import fr.pantheonsorbonne.miage.Cartes.Card;
 public class DumbPlayer extends Player {
 
     private Random random = new Random();
+    
+
 
     public DumbPlayer(String name) {
         super(name);
@@ -72,8 +74,6 @@ public class DumbPlayer extends Player {
 
     @Override
     public Card choisirUneCarte() {
-        // Assurez-vous que le joueur a des cartes en main
-
 
         // Sélectionner une carte au hasard dans la main du joueur
         int randomIndex = random.nextInt(this.getHand().size());

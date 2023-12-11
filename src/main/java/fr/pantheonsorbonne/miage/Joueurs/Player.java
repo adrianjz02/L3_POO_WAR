@@ -155,8 +155,7 @@ public class Player {
     }
 
     public Card choisirUneCarteADefausser() {
-        System.out.print(this.getName()
-                + ", entrez la carte que vous souhaitez défausser (par exemple, 'C5' pour le 5 de coeur) : ");
+        System.out.print(this.getName() + ", entrez la carte que vous souhaitez défausser (par exemple, 'C5' pour le 5 de coeur) : ");
 
         while (true) {
             String choix = scanner.nextLine();
@@ -173,8 +172,7 @@ public class Player {
     }
 
     public Card choisirUneCarte() {
-        System.out.print(this.getName()
-                + ", entrez la carte que vous souhaitez choisir (par exemple, 'C5' pour le 5 de coeur) : ");
+        System.out.print(this.getName() + ", entrez la carte que vous souhaitez choisir (par exemple, 'C5' pour le 5 de coeur) : ");
 
         while (true) {
             String choix = scanner.nextLine();
