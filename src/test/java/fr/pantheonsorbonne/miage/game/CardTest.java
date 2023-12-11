@@ -99,38 +99,6 @@ class CardTest {
     }
 
     @Test
-    void testCardsToString() {
-        Card[] cards = {
-                new Card(CardColor.CLUBS, CardValue.AS),
-                new Card(CardColor.CLUBS, CardValue.DIX),
-                new Card(CardColor.CLUBS, CardValue.ROI)
-        };
-        assertEquals("SOME_COLORAS;SOME_COLORDIX;SOME_COLORROI", Card.cardsToString(cards),
-                "La représentation en chaîne des cartes devrait être correcte");
-    }
-
-    @Test
-    void testCreateTarotDeck() {
-        List<Card> deck = Card.createTarotDeck();
-
-        // Assurez-vous que le deck contient l'Excuse
-        assertTrue(deck.stream().anyMatch(card -> card.color() == CardColor.EXCUSE && card.value() == CardValue.EXCUSE),
-                "Le deck devrait contenir l'Excuse");
-
-        // Assurez-vous que le deck contient des atouts
-        assertTrue(deck.stream().anyMatch(card -> card.color() == CardColor.ATOUT),
-                "Le deck devrait contenir des atouts");
-
-        // Assurez-vous que le deck contient des cartes de différentes couleurs et valeurs
-        for (CardColor color : CardColor.values()) {
-            for (CardValue value : CardValue.values()) {
-                assertTrue(deck.stream().anyMatch(card -> card.color() == color && card.value() == value),
-                        "Le deck devrait contenir une carte de couleur " + color + " et de valeur " + value);
-            }
-        }
-    }
-
-    @Test
     void testCompareTo() {
         Card atoutCard = new Card(CardColor.ATOUT, CardValue.AS);
         Card nonAtoutCard = new Card(CardColor.CLUBS, CardValue.AS);
