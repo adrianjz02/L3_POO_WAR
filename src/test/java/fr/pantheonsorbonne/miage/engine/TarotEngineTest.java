@@ -106,7 +106,6 @@ public class TarotEngineTest {
                 "Les joueurs ne devraient pas avoir le même nombre de cartes");
     }
 
-
     @Test
     public void testPlayersListIsNull() {
         TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
@@ -131,7 +130,7 @@ public class TarotEngineTest {
         Player chien = new Player("Chien");
 
         // Création de l'instance de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck,10);
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         // Nombre de cartes à ajouter
         int nombreCartes = 6;
@@ -144,8 +143,6 @@ public class TarotEngineTest {
 
     }
 
-
-    
     @Test
     public void testDistributeCards() {
         // Préparation de l'environnement de test
@@ -155,7 +152,7 @@ public class TarotEngineTest {
         Player donneur = players.get(0); // Le premier joueur est le donneur
 
         // Initialisation de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck,1);
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         // Taille initiale du deck
         int tailleInitialeDeck = deck.size();
@@ -168,10 +165,33 @@ public class TarotEngineTest {
         for (Player player : players) {
             assertTrue(player.getLength() > 0, "Chaque joueur doit avoir des cartes");
         }
-        assertEquals(tailleInitialeDeck - chien.getLength() - players.stream().mapToInt(Player::getLength).sum(), deck.size(), "Le nombre de cartes restantes dans le deck doit être correct");
+        assertEquals(tailleInitialeDeck - chien.getLength() - players.stream().mapToInt(Player::getLength).sum(),
+                deck.size(), "Le nombre de cartes restantes dans le deck doit être correct");
 
     }
 
+    @Test
+    public void testVerifPetitAuBoutAttaquantGagne() {
+        // Préparation des joueurs, des plis et du jeu
+        Player attaquant = new Player("Attaquant");
+        Player defenseur1 = new Player("Defenseur1");
+        Player defenseur2 = new Player("Defenseur2");
+        List<Player> players = Arrays.asList(attaquant, defenseur1, defenseur2);
+
+        List<Card> deckPliAttaquant = new ArrayList<>(); // Créez un pli contenant le Petit pour l'attaquant
+        deckPliAttaquant.add(new Card(CardColor.ATOUT, CardValue.AS)); // Ajoute le "Petit" (Atout 1)
+        deckPliAttaquant.add(new Card(CardColor.HEARTS, CardValue.ROI)); // Roi de Cœur
+        deckPliAttaquant.add(new Card(CardColor.DIAMONDS, CardValue.REINE)); // Dame de Carreau
+        
+
+        List<Card> deckPliDefenseur = new ArrayList<>(); // Créez un pli pour les défenseurs sans le Petit
+
+        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
+        tarotEngine.verifPetitAuBout(players.size(), attaquant, attaquant, players, deckPliAttaquant, deckPliDefenseur);
+
+        // Vérifications
+        assertEquals(10, attaquant.getScore(), "L'attaquant devrait avoir un bonus pour le Petit au bout");
+    }
 
     private static class TarotEngineImpl extends TarotEngine {
         public TarotEngineImpl(Deck deck, int nombreDeManche) {
