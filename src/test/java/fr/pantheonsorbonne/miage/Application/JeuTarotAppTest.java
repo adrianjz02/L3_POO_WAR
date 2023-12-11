@@ -24,12 +24,12 @@ public class JeuTarotAppTest {
     void setUp() {
         jeuTarotApp = new JeuTarotApp(new RandomDeck(), List.of("Player1", "Player2", "Player3"), 3);
     }
-/* 
+
     @Test
     void testConstructor() {
         assertNotNull(jeuTarotApp.getInitialPlayers());
     }
-*/
+
 
     @Test
     void testPlayerInitialization() {

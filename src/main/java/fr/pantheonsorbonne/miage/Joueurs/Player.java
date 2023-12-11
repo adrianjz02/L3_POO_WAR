@@ -16,7 +16,7 @@ public class Player {
     private List<Card> hand; // La main du joueur, contenant ses cartes.
     private String mise;
     private int score;
-    static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
 
     public Player(String name) {
         this.name = name;
