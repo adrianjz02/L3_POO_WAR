@@ -606,7 +606,7 @@ public abstract class TarotEngine {
         return tousPasses;
     }
 
-    private Map<Player, String> demanderLesMises(List<Player> players) {
+    public Map<Player, String> demanderLesMises(List<Player> players) {
         String[] optionsDeMise = { "Passer", "Petite", "Garde", "Garde sans", "Garde contre" };
         int miseMaxIndex = -1; // -1 signifie qu'aucune mise n'a encore été faite
         Map<Player, String> misesDesJoueurs = new HashMap<>(); // HashMap pour stocker les mises des joueurs

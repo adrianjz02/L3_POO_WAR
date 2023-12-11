@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import fr.pantheonsorbonne.miage.Deck.RandomDeck;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
-class JeuTarotAppTest {
+public class JeuTarotAppTest {
 
     private JeuTarotApp jeuTarotApp;
 
@@ -29,6 +29,7 @@ class JeuTarotAppTest {
     void testConstructor() {
         assertNotNull(jeuTarotApp.getInitialPlayers());
     }
+
 
     @Test
     void testPlayerInitialization() {

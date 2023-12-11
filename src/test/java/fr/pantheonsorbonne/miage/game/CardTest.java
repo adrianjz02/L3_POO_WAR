@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;  // Assurez-vous d'importer la bonne annotation Test
 import fr.pantheonsorbonne.miage.Cartes.Card;  // Ajoutez cette ligne d'importation
 import fr.pantheonsorbonne.miage.Cartes.CardColor;
