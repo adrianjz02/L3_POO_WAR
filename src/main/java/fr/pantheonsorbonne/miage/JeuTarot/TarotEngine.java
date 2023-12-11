@@ -50,8 +50,7 @@ public abstract class TarotEngine {
 
                 // Vérifier la taille du chien avant de demander les mises
                 if (dogSize != dog.getLength()) {
-                    System.out.println(
-                            "La taille du chien ne correspond pas à la taille du chien demandé, redistribution nécessaire.");
+                    System.out.println("La taille du chien ne correspond pas à la taille du chien demandé, redistribution nécessaire.");
                     reconstitutionDeck(playerList, deck, dog); // Méthode de redistribution
                     moveFirstToLast(playerList); // Le donneur devient celui qui est à droite du donneur.
                     System.out.println(deck.size());
@@ -95,6 +94,7 @@ public abstract class TarotEngine {
                     verifExcuseAuBout(numPlayers, attaquant, gagnantPli, playerList, deckPliAttaquant,
                             deckPliDefenseur);
                 }
+             
 
             }
 
@@ -108,7 +108,7 @@ public abstract class TarotEngine {
             deck.addAllCards(deckPliAttaquant);
             deck.addAllCards(deckPliDefenseur);
 
-        }
+        }  
     }
 
     public void calculerScoreManche(double nombreDePoints, int nombreDeBouts, String contrat, List<Player> playerList,
@@ -279,11 +279,9 @@ public abstract class TarotEngine {
         }
         return count;
     }
-    // Organiser le code
-    // La portée (public / proctected / private)
 
     public Player gererPli(List<Player> joueurs, Player attaquant, List<Card> pliAttaquant, List<Card> pliDefenseur) {
-
+        
         List<Card> pli = new ArrayList<>();
         CardColor couleurDemandee = null;
         Card carteLaPlusForte = null;
@@ -293,6 +291,7 @@ public abstract class TarotEngine {
         Player joueurExcuse = new Player(null); // Joueur ayant joué l'excuse
 
         for (Player joueur : joueurs) {
+            System.out.println(joueur.getLength());
             boolean carteValide;
             Card carteJouee;
             do {
@@ -349,8 +348,7 @@ public abstract class TarotEngine {
 
             } while (!carteValide);
 
-            joueur.removeCardFromHand(carteJouee);
-            pli.add(carteJouee);
+            
 
             if (carteJouee.color() == CardColor.ATOUT) {
                 atoutJoue = true;
@@ -362,6 +360,9 @@ public abstract class TarotEngine {
 
             }
 
+            joueur.removeCardFromHand(carteJouee);
+            pli.add(carteJouee);
+            
         }
 
         System.out.println(gagnantDuPli.getName() + " a gagné le pli !\nLe pli : "
@@ -558,15 +559,11 @@ public abstract class TarotEngine {
     private void reconstitutionDeck(List<Player> playerList, Deck deck, Player dog) {
         for (Player joueur : playerList) {
             List<Card> playerCards = joueur.emptyHand(); // Récupère les cartes du joueur
-            for (Card card : playerCards) {
-                deck.addCard(card); // Ajoute chaque carte au deck
+            deck.addAllCards(playerCards);
             }
-        }
         // Ne pas oublier de récupérer les cartes du chien également
         List<Card> dogCards = dog.emptyHand();
-        for (Card card : dogCards) {
-            deck.addCard(card); // Ajoute chaque carte au deck
-        }
+        deck.addAllCards(dogCards);
     }
 
     private boolean verifierEtRedistribuerSiNecessaire(Map<Player, String> mises) {
