@@ -7,8 +7,6 @@ import fr.pantheonsorbonne.miage.Cartes.Card;
 public interface Deck {
 
     default Card getCard() {
-        Card[] res = getCards(1);
-
         return getCards(1)[0];
     }
 

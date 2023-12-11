@@ -60,10 +60,6 @@ public class DumbPlayer extends Player {
 
     @Override
     public Card choisirUneCarteADefausser() {
-        // Assurez-vous que le joueur a des cartes en main
-        if (this.getHand().isEmpty()) {
-            throw new IllegalStateException(this.getName() + " n'a pas de cartes à défausser.");
-        }
 
         // Sélectionner une carte au hasard dans la main du joueur
         int randomIndex = random.nextInt(this.getHand().size());
@@ -77,9 +73,7 @@ public class DumbPlayer extends Player {
     @Override
     public Card choisirUneCarte() {
         // Assurez-vous que le joueur a des cartes en main
-        if (this.getHand().isEmpty()) {
-            throw new IllegalStateException(this.getName() + " n'a pas de cartes à jouer.");
-        }
+
 
         // Sélectionner une carte au hasard dans la main du joueur
         int randomIndex = random.nextInt(this.getHand().size());

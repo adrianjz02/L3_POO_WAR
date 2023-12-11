@@ -14,23 +14,30 @@ import fr.pantheonsorbonne.miage.JeuTarot.TarotEngine;
 import fr.pantheonsorbonne.miage.Joueurs.DumbPlayer;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
-public class JeuTarotLocal extends TarotEngine {
+public class JeuTarotReseauLocal extends TarotEngine {
 
     private final List<Player> initialPlayers;
     private final Map<String, Queue<Card>> playerCards = new HashMap<>();
 
-    protected JeuTarotLocal(Deck deck, List<String> playerNames, int nombreDeManche) {
+    protected JeuTarotReseauLocal(Deck deck, List<String> playerNames, int nombreDeManche) {
         super(deck, nombreDeManche);
         this.initialPlayers = new ArrayList<>();
-        for (String playerName : playerNames) {
-            Player player = new DumbPlayer(playerName);
+        for (int i = 0; i < playerNames.size(); i++) {
+            Player player;
+            if (i < playerNames.size() - 1) {
+                // Pour les premiers joueurs, créez des instances de DumbPlayer
+                player = new DumbPlayer(playerNames.get(i));
+            } else {
+                // Pour le dernier joueur, créez une instance de Player
+                player = new Player(playerNames.get(i));
+            }
             this.initialPlayers.add(player);
-            playerCards.put(playerName, new LinkedList<>());
+            playerCards.put(playerNames.get(i), new LinkedList<>());
         }
     }
 
     public static void main(String... args) {
-        TarotEngine localTarotGame = new JeuTarotLocal(new RandomDeck(), Arrays.asList("Adrian", "Nino", "Nicolas"),
+        TarotEngine localTarotGame = new JeuTarotReseauLocal(new RandomDeck(), Arrays.asList("Adrian", "Nino", "Nicolas"),
                 50);
         localTarotGame.play();
         System.exit(0);
