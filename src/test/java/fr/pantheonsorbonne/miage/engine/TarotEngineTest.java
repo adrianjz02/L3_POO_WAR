@@ -1,10 +1,8 @@
 package fr.pantheonsorbonne.miage.engine;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -617,12 +614,6 @@ public class TarotEngineTest {
     }
 
 
-
-
-
-
-
-
     // Classe MockPlayer pour simuler un joueur
     private static class MockPlayer extends Player {
         private List<Card> hand;
@@ -632,9 +623,6 @@ public class TarotEngineTest {
             this.hand = hand;
         }
 
-        public String renvoyerLettre(String lettre) {
-            return lettre;
-        }
 
         @Override
         public Card choisirUneCarte() {
@@ -646,7 +634,7 @@ public class TarotEngineTest {
                         .findFirst()
                         .orElse(hand.remove(0)); // Retire et retourne la première carte
             } else {
-                // Retourne null ou lance une exception personnalisée si la main est vide
+                // Retourne null si la main est vide
                 return null;
             }
         }
