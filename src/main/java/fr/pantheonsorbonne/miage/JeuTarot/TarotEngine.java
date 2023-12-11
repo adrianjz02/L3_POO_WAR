@@ -21,8 +21,8 @@ public abstract class TarotEngine {
 
     static Scanner scanner = new Scanner(System.in);
 
-    protected TarotEngine(Deck deck, int nombreDeManche) {
-        this.deck = deck;
+    protected TarotEngine(Deck deck2, int nombreDeManche) {
+        this.deck = deck2;
         this.nombreDeManche = nombreDeManche;
     }
 
@@ -643,7 +643,7 @@ public abstract class TarotEngine {
         return joueurAvecLaPlusGrosseMise;
     }
 
-    private void distributeCards(List<Player> players, int dogSize, Player dog, Player donneur) {
+    public void distributeCards(List<Player> players, int dogSize, Player dog, Player donneur) {
         int compteur_chien = 0;
         /**
          * On commence à l'index NUMÉRO 1 car le donneur est le joueur à l'index 0.
@@ -709,7 +709,7 @@ public abstract class TarotEngine {
     }
 
     // Méthodes séparées pour la distribution
-    private void ajouterAuChien(Player dog, int nombreCartes) {
+    public void ajouterAuChien(Player dog, int nombreCartes) {
         // Logique d'ajout au chien
         dog.addCardsToHand(deck.getCards(nombreCartes));
     }
