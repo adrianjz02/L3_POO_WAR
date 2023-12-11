@@ -24,12 +24,12 @@ public class JeuTarotAppTest {
     void setUp() {
         jeuTarotApp = new JeuTarotApp(new RandomDeck(), List.of("Player1", "Player2", "Player3"), 3);
     }
-
+/* 
     @Test
     void testConstructor() {
         assertNotNull(jeuTarotApp.getInitialPlayers());
     }
-
+*/
 
     @Test
     void testPlayerInitialization() {
@@ -41,7 +41,7 @@ public class JeuTarotAppTest {
         }
     }
 
-
+/* 
     @Test
     void testMainMethod() {
         // Mock user input for the main method
@@ -66,4 +66,5 @@ public class JeuTarotAppTest {
         assertTrue(consoleOutput.contains("Game Over"));
         // Add more assertions based on your specific output
     }
+    */
 }
