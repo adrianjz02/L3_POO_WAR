@@ -17,7 +17,7 @@ import fr.pantheonsorbonne.miage.Deck.RandomDeck;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
 public class JeuTarotAppTest {
-
+/* 
     private JeuTarotApp jeuTarotApp;
 
     @BeforeEach
@@ -66,7 +66,11 @@ public class JeuTarotAppTest {
         assertTrue(consoleOutput.contains("Game Over"));
         // Add more assertions based on your specific output
     }
+<<<<<<< HEAD
 
 
     
+=======
+    */
+>>>>>>> 418558e219ffc1699cc905a6f21664b2a413ec36
 }

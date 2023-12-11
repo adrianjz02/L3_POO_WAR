@@ -428,7 +428,7 @@ public class TarotEngineTest {
     public void testGererPliToutesCartesAtouts() {
         // Création des joueurs et initialisation de leur main
         Player attaquant = new MockPlayer("Attaquant", Stream.of(
-                new Card(CardColor.ATOUT, CardValue.VINGT_ET_UN) // Atout 21 
+                new Card(CardColor.ATOUT, CardValue.VINGT_ET_UN) // Atout 21
         ).collect(Collectors.toList()));
 
         Player defenseur1 = new MockPlayer("Defenseur1", Stream.of(
@@ -455,7 +455,8 @@ public class TarotEngineTest {
         Player gagnantDuPli = tarotEngine.gererPli(joueurs, attaquant, pliAttaquant, pliDefenseur);
 
         // Vérifications
-        assertEquals(attaquant.getName(), gagnantDuPli.getName(), "L'attaquant doit gagner le pli avec le plus fort atout (Atout 21)");
+        assertEquals(attaquant.getName(), gagnantDuPli.getName(),
+                "L'attaquant doit gagner le pli avec le plus fort atout (Atout 21)");
         assertTrue(pliAttaquant.contains(new Card(CardColor.ATOUT, CardValue.VINGT_ET_UN)),
                 "Le pli de l'attaquant doit contenir le plus fort atout (Atout 21)");
 
