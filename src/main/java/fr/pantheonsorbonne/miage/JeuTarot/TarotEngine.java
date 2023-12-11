@@ -26,14 +26,20 @@ public abstract class TarotEngine {
         this.nombreDeManche = nombreDeManche;
     }
 
+    // méthode pour lancer la partie
     public void play() {
 
         int numPlayers = getInitialPlayers().size();
+        // On créé un jouueur "chien" car il possède les même méthode qu'un jouer c'est
+        // à dire avoir la longueur ou encore donenr des cartes
         Player dog = new Player("Chien");
         List<Player> playerList = getInitialPlayers();
 
+        // i signifie le nombre de manche
         for (int i = 1; i < nombreDeManche + 1; i++) {
             System.out.println("\nMANCHE NUMÉRO : " + i + "\n");
+
+            // Il y a deux pli, un pour l'attaquant et un pour la défense
             List<Card> deckPliAttaquant = new ArrayList<>();
             List<Card> deckPliDefenseur = new ArrayList<>();
             Map<Player, String> mises = new HashMap<>();
@@ -53,9 +59,11 @@ public abstract class TarotEngine {
                     System.out.println(
                             "La taille du chien ne correspond pas à la taille du chien demandé, redistribution nécessaire.");
                     reconstitutionDeck(playerList, deck, dog); // Méthode de redistribution
-                    moveFirstToLast(playerList); // Le donneur devient celui qui est à droite du donneur.
+                    moveFirstToLast(playerList); // Le donneur devient celui qui est à droite du donneur. c'est à dire
+                                                 // que la personne à l'index 0 distribue les cartes
                     continue; // Passez à la prochaine itération de la boucle do-while pour redistribuer
-                } else if (!ontTousLeMemeNombreDeCartes(playerList)) {
+                } else if (!ontTousLeMemeNombreDeCartes(playerList)) { // On vérifie que tous les joueurs ont bien le
+                                                                       // même nombre de cartes
                     System.out.println(
                             "Les joueurs ne possèdent pas le même nombre de carte.");
                     reconstitutionDeck(playerList, deck, dog);
@@ -75,11 +83,15 @@ public abstract class TarotEngine {
 
             } while (verifierEtRedistribuerSiNecessaire(mises));
 
+            // Initialiser la variable de l'attaquant, c'est à dire celui qui a la plus
+            // grosse mise entre les joueurs
             Player attaquant = trouverJoueurAvecLaPlusGrosseMise(mises);
             String miseMax = mises.get(attaquant);
             System.out.println(attaquant.getName() + " a misé " + miseMax);
             distribuerChienSelonMise(attaquant, miseMax, dog, deckPliAttaquant, deckPliDefenseur);
 
+            // On tri la main des joueurs (la main des joueurs doit être trié une fois que
+            // les cartes ont été distribué et qlq'un ai misé pendant les enchères)
             for (Player player : playerList) {
                 player.sortHand();
             }
@@ -87,11 +99,13 @@ public abstract class TarotEngine {
             System.out
                     .println("\nLES CARTES ONT ÉTÉ DISTRIBUÉES ET LES ENCHÈRES FAITES ! LA MANCHE PEUT COMMENCER !\n");
 
+            // TANT QUE LA SOMME DES CARTES DANS LE PLI DES DEUX CAMPS N'EST PAS EGALE A LA
+            // TOTALITE DES CARTES ON JOUE
             while ((deckPliAttaquant.size() + deckPliDefenseur.size()) != 78) {
 
                 Player gagnantPli = gererPli(playerList, attaquant, deckPliAttaquant, deckPliDefenseur);
-                // afficherPli(deckPliAttaquant, "pli de l'attaquant");
-                // afficherPli(deckPliDefenseur, "pli des défenseurs");
+                // afficherPli(deckPliAttaquant, "pli de l'attaquant"); // ICI ON A MIS EN COMMENTAIRE POUR VOIR QUE TOUT FONCTIONNAIT BIEN
+                // afficherPli(deckPliDefenseur, "pli des défenseurs"); // POUR VOIR SI LE CONTENU DU DECK DE PLI A CHAQUE PLI
                 movePlayerToFirst(gagnantPli, playerList);
 
                 if ((deckPliAttaquant.size() + deckPliDefenseur.size()) == 78) {
@@ -101,14 +115,15 @@ public abstract class TarotEngine {
                 }
 
             }
-
+            // Calculer la manche
             calculerScoreManche(compteurPoints(deckPliAttaquant), countBouts(deckPliAttaquant), miseMax, playerList,
                     attaquant);
 
+            // AFFICHAGE DES SCORE : LE JOUEUR AYANT LE PLUS DE POINTS GAGNE LA PARTIE
             for (Player player : playerList) {
                 System.out.println(player.getName() + " " + player.getScore());
             }
-
+            // Remettre les cartes dans le deck
             deck.addAllCards(deckPliAttaquant);
             deck.addAllCards(deckPliDefenseur);
 
@@ -134,6 +149,7 @@ public abstract class TarotEngine {
     public void calculerScoreManche(double nombreDePoints, int nombreDeBouts, String contrat, List<Player> playerList,
             Player attaquant) {
         int seuil;
+        // Si le joueur a 3 bouts il doit faire 36 points, 2 : 41, 1 : 51, aucun : 56
         switch (nombreDeBouts) {
             case 3:
                 seuil = 36;
@@ -152,9 +168,15 @@ public abstract class TarotEngine {
         System.out.println(attaquant.getName() + " possède " + nombreDeBouts
                 + " bouts. Il devait donc faire un score égal ou supérieur à " + seuil);
         System.out.println("Il a obtenu " + nombreDePoints + " points.");
+
         boolean validiteDuContrat;
         double difference = nombreDePoints - seuil;
+
         System.out.println(attaquant.getName() + " avait misé : " + contrat);
+
+        // Si la différence entre le nombre de points mis par le jouer et le sueil est
+        // positif alors le joueur a gagné son contrat et gagne la manche
+
         if (difference >= 0) {
             validiteDuContrat = true;
             System.out.println(attaquant.getName() + " a validé son contrat et gagne donc la manche.");
@@ -163,12 +185,15 @@ public abstract class TarotEngine {
             System.out.println(attaquant.getName() + " n'a pas pu valider son contrat et perd donc la manche.");
         }
 
+        // abs si jamais la différence est négatif pour calculer le nombre de points
+        // total après
         difference = Math.abs(difference);
 
         // Arrondi au nombre au dessus si nécessaire
         difference = Math.ceil(difference);
         int differenceArrondi = (int) difference;
 
+        // dans règles, en fonction du contrat le nombre de point mis.
         int mise;
         switch (contrat) {
             case "Petite":
@@ -189,6 +214,9 @@ public abstract class TarotEngine {
 
         int scoreTotal = (25 + differenceArrondi) * mise;
 
+        // Ici on attribue les points en fonction de l'attaquant et du défenseur et en
+        // fonction du gagnant et du perdant.
+        // On donne le score en fonction de la validiteDuContrat (true false)
         for (Player player : playerList) {
             if (player.equals(attaquant)) {
                 player.addScore(validiteDuContrat ? scoreTotal * (playerList.size() - 1)
@@ -197,12 +225,10 @@ public abstract class TarotEngine {
                 player.addScore(validiteDuContrat ? -scoreTotal : scoreTotal);
             }
         }
-
-        for (Player player : playerList) {
-            System.out.println(player.getScore());
-        }
     }
 
+    // Règle bonus : Petit au bout si il y a un bout dans le dernier pli, 10 points
+    // pour l'équipe
     public void verifPetitAuBout(int numPlayers, Player attaquant, Player gagnantDernierPli, List<Player> playerList,
             List<Card> deckPliAttaquant, List<Card> deckPliDefenseur) {
         if (gagnantDernierPli.equals(attaquant)) {
@@ -225,6 +251,7 @@ public abstract class TarotEngine {
         }
     }
 
+    // SI l'excuse est au bout, donne l'excuse à l'équipe adverse
     public void verifExcuseAuBout(int numPlayers, Player attaquant, Player gagnantDernierPli, List<Player> playerList,
             List<Card> deckPliAttaquant, List<Card> deckPliDefenseur) {
         if (gagnantDernierPli.equals(attaquant)) {
@@ -303,15 +330,15 @@ public abstract class TarotEngine {
     public Player gererPli(List<Player> joueurs, Player attaquant, List<Card> pliAttaquant, List<Card> pliDefenseur) {
 
         List<Card> pli = new ArrayList<>();
-        CardColor couleurDemandee = null;
+        CardColor couleurDemandee = null; // Quand on commence un pli on suppose que la couleur et la carte la plus
+                                          // forte n'est pas initialisé et sera initialisé à la première carte joué
         Card carteLaPlusForte = null;
         Player gagnantDuPli = new Player(null);
-        boolean atoutJoue = false;
+        boolean atoutJoue = false; 
         boolean excuseJouee = false;
         Player joueurExcuse = new Player(null); // Joueur ayant joué l'excuse
 
         for (Player joueur : joueurs) {
-            System.out.println(joueur.getLength());
             boolean carteValide;
             Card carteJouee;
             do {
@@ -319,13 +346,16 @@ public abstract class TarotEngine {
                 // joueur.showHandSorted();
                 carteJouee = joueur.choisirUneCarte();
 
-                if (couleurDemandee == null) {
 
+                // Si c'est la première carte joué rentre dans la conditions 
+                if (couleurDemandee == null) {
+                    // L'excuse est une carte spécial et si l'excuse est joué en premier, la dexuième carte déterminera la couleur
                     if (carteJouee.value() == CardValue.EXCUSE) {
                         couleurDemandee = null;
                         excuseJouee = true;
                         joueurExcuse = joueur;
                     } else {
+                        // Sinon c'est la première carte joué qui détermine la couleur
                         couleurDemandee = carteJouee.color();
                         carteLaPlusForte = carteJouee;
                         gagnantDuPli = joueur;
@@ -333,17 +363,19 @@ public abstract class TarotEngine {
 
                 } else {
 
+                    // On initialise le joeuur ayant joué l'excuse
                     if (carteJouee.value() == CardValue.EXCUSE) {
                         excuseJouee = true;
                         joueurExcuse = joueur;
                     } else {
-                        if (joueur.checkColor(couleurDemandee)) {
 
+                        if (joueur.checkColor(couleurDemandee)) {
+                            // Si le joueur ne joue pas une couleur demandée et qu'il possède une couleur demandé alors il ne valide pas la carte
                             if (carteJouee.color() != couleurDemandee) {
                                 System.out.println(joueur.getName() + ", VOUS DEVEZ JOUER UNE CARTE DE COULEUR "
                                         + couleurDemandee + ".");
                                 carteValide = false;
-
+                            // Si la couleur demander est un atout et qu'il possède un atout plus puissant et qu'il ne joue pas un atout, on ne valide pas la carte
                             } else if ((hasHigherAtout(carteLaPlusForte, joueur.getHand())
                                     && (carteJouee.color() == CardColor.ATOUT))
                                     && carteJouee.compareTo(carteLaPlusForte) <= 0) {
@@ -351,14 +383,14 @@ public abstract class TarotEngine {
                                         + carteLaPlusForte + ".");
                                 carteValide = false;
                             }
-
+                            // Si le joueur n'a pas la couleur demandé mais qu'il possède un atout alors joue un atout
                         } else if (!joueur.checkColor(couleurDemandee) && joueur.checkColor(CardColor.ATOUT)) {
                             // Le joueur n'a pas la couleur demandée mais a des atouts
                             if (carteJouee.color() != CardColor.ATOUT) {
                                 System.out.println(joueur.getName()
                                         + ", vous n'avez pas la couleur jouée par le premier joueur et vous possédez un atout.");
                                 carteValide = false;
-
+                            // Si il possède un atout supérieur à un atout joué alors il est obligé de jouer un atout
                             } else if ((hasHigherAtout(carteLaPlusForte, joueur.getHand())
                                     && (carteJouee.color() == CardColor.ATOUT))
                                     && carteJouee.compareTo(carteLaPlusForte) <= 0) {
@@ -376,13 +408,13 @@ public abstract class TarotEngine {
             if (carteJouee.color() == CardColor.ATOUT) {
                 atoutJoue = true;
             }
-
+            // Si atoutJoué est true alors la carte joué la plus forte sera automatiquent un atout (peut importe la couleur) sauf si on vient à comparer des atouts
             if (estCartePlusForte(carteJouee, carteLaPlusForte, couleurDemandee, atoutJoue)) {
                 carteLaPlusForte = carteJouee;
                 gagnantDuPli = joueur;
 
             }
-
+            //on enlève la carte de la main du joueur et on l'ajoute au pli
             joueur.removeCardFromHand(carteJouee);
             pli.add(carteJouee);
 
@@ -391,8 +423,10 @@ public abstract class TarotEngine {
         System.out.println(gagnantDuPli.getName() + " a gagné le pli !\nLe pli : "
                 + pli.stream().map(Card::toString).collect(Collectors.joining(" ")));
 
+                // CAS DE L'EXCUSE :
         boolean estAttaquantQuiAJoueExcuse = joueurExcuse.equals(attaquant);
-
+        // peut importe le joueur tant qu'elle n'est pas jouer dans le dernier pli, l'équipe ayant joué l'excuse la récupère
+        // Si le joueur ayant joué l'excuse perd le pli, il l'a récupère mais donne une carte en échange dans le pli
         if (excuseJouee == true) {
             if (estAttaquantQuiAJoueExcuse) {
                 // Parcourir chaque carte du pli
@@ -425,6 +459,7 @@ public abstract class TarotEngine {
                 System.out.println(
                         "La défense a joué l'excuse mais perd le pli. La défense reprend l'excuse mais l'attaquant prend une carte en échange dans le pli.");
             }
+            // EN FONCTION DU GAGNANT DU PLI LE PLI VA VERS LE PLI DES ATTAQUANT OU DES DEFENSEURS
         } else {
             if (gagnantDuPli.equals(attaquant)) {
                 System.out.println("Le pli va dans le deck de pli de l'attaquant.");
@@ -435,6 +470,7 @@ public abstract class TarotEngine {
             }
         }
 
+        // Règles supplémentaires : Si toutes les cartes du plis sont des atouts alors on donne deux cartes au joueur de droite 
         if (areAllCardsAtouts(pli) && joueurs.get(0).getLength() >= 2) {
             System.out.println(
                     "Toutes les cartes du pli sont des atouts. Chaque joueur doit donner deux cartes au joueur de droite.");
@@ -465,6 +501,7 @@ public abstract class TarotEngine {
         System.out.println("Les cartes ont été données aux joueurs.");
     }
 
+    // Test pour savoir si toutes les cartes du pli sont des atouts
     public boolean areAllCardsAtouts(List<Card> pli) {
         for (Card card : pli) {
             if (card.color() != CardColor.ATOUT) {
@@ -474,6 +511,7 @@ public abstract class TarotEngine {
         return true; // Toutes les cartes sont des atouts
     }
 
+    // On regarde si le joueur possède un atout supérieur dans son deck par rapport à la carte joué précédemment
     public boolean hasHigherAtout(Card card, List<Card> deck) {
         if (card.color() != CardColor.ATOUT) {
             // Si la carte n'est pas un atout, il n'est pas nécessaire de continuer.
@@ -483,6 +521,8 @@ public abstract class TarotEngine {
         return deck.stream().anyMatch(deckCard -> deckCard.color() == CardColor.ATOUT && deckCard.compareTo(card) > 0);
     }
 
+
+    // On compare la carte joué et la carte la plus forte joué pendant le pli. Ce qui va nous permettre de déterminé le gagnant d'un pli
     private boolean estCartePlusForte(Card carteJouee, Card carteLaPlusForte, CardColor couleurDemandee,
             boolean atoutJoue) {
         // Si la couleur demandée est un atout ou si un atout a été joué après une
@@ -516,6 +556,7 @@ public abstract class TarotEngine {
         System.out.println();
     }
 
+    // Dans les règles, le chien est distribué soit dans le pli (attaquant ou défense) soit vers l'attaquant en fonction de la mise
     public void distribuerChienSelonMise(Player joueurAvecLaPlusGrosseMise, String miseMax, Player dog,
             List<Card> deckPliAttaquant, List<Card> deckPliDefenseur) {
 
@@ -560,6 +601,8 @@ public abstract class TarotEngine {
         }
     }
 
+
+    // SI le joueur a fait une petite ou une garde il recoit les cartes mais doit se défausser d'autant de carte qu'il a reçu
     public void seDefausser(Player joueur, int nombreDeCartesADefausser, List<Card> pliJoueur, Scanner scanner) {
         joueur.sortHand();
         joueur.showHandSorted();
@@ -580,6 +623,7 @@ public abstract class TarotEngine {
         }
     }
 
+    // Permet de reconstituer en prenant les mains de chaque joueurs et du chien si jamais les cartes ont mal été distribué ou que tout le monde ait passer pendant les enchères
     public void reconstitutionDeck(List<Player> playerList, Deck deck, Player dog) {
         for (Player joueur : playerList) {
             List<Card> playerCards = joueur.emptyHand(); // Récupère les cartes du joueur
@@ -590,6 +634,7 @@ public abstract class TarotEngine {
         deck.addAllCards(dogCards);
     }
 
+    // Si tout le monde a passé on redistribue
     public boolean verifierEtRedistribuerSiNecessaire(Map<Player, String> mises) {
         // Vérifiez si tous les joueurs ont passé
         boolean tousPasses = true;
@@ -606,6 +651,7 @@ public abstract class TarotEngine {
         return tousPasses;
     }
 
+    // Demande les mises de chaque joueurs
     public Map<Player, String> demanderLesMises(List<Player> players) {
         String[] optionsDeMise = { "Passer", "Petite", "Garde", "Garde sans", "Garde contre" };
         int miseMaxIndex = -1; // -1 signifie qu'aucune mise n'a encore été faite
@@ -626,6 +672,7 @@ public abstract class TarotEngine {
         return misesDesJoueurs;
     }
 
+    // On détecte lequel des joueurs possède la plus grosse mise
     public Player trouverJoueurAvecLaPlusGrosseMise(Map<Player, String> misesDesJoueurs) {
         String[] optionsDeMise = { "Passer", "Petite", "Garde", "Garde sans", "Garde contre" };
         Player joueurAvecLaPlusGrosseMise = null;
@@ -643,6 +690,7 @@ public abstract class TarotEngine {
         return joueurAvecLaPlusGrosseMise;
     }
 
+    // On distribue les cartes
     public void distributeCards(List<Player> players, int dogSize, Player dog, Player donneur) {
         int compteur_chien = 0;
         /**
@@ -720,6 +768,7 @@ public abstract class TarotEngine {
         System.out.println(nombreCartes + " cartes ont été distribué à : " + player.getName());
     }
 
+    // Met le premier joueur en de la liste en dernier 
     public void moveFirstToLast(List<Player> playerList) {
         if (playerList != null && !playerList.isEmpty()) {
             // Retirer le premier élément et le stocker
@@ -730,6 +779,10 @@ public abstract class TarotEngine {
         }
     }
 
+    // Ici lorsqu'on a déterminé un gagnant, on le met en premier de la liste car quand on appelle la méthode pour effectuer un pli, c'est 
+    // le joueur qui est renvoyé
+    // quand la méthode gererPli() est appele c'est le joueur à l'index 0 qui commence vu qu'on parcours une liste
+    // C'est pour cela que gérer un pli renvoie le gagnant du pli pour ensuite appeler cette fonction et le mettre en première positions
     public void movePlayerToFirst(Player joueur, List<Player> playerList) {
         if (playerList != null && !playerList.isEmpty() && playerList.contains(joueur)) {
             while (!playerList.get(0).equals(joueur)) {

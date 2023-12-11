@@ -7,32 +7,41 @@ import java.util.stream.Collectors;
 
 public record Card(CardColor color, CardValue value) implements Comparable<Card> {
 
+
+    // Test pour vérifier si la carte est l'atout 1
     public boolean isPetit() {
         return this.color == CardColor.ATOUT && this.value == CardValue.AS;
     }
 
+    // Test pour vérifier si la carte est l'atout 1 ou l'atout 21 ou l'excuse
     public boolean isBout() {
         return (this.color == CardColor.EXCUSE && this.value == CardValue.EXCUSE) ||
                 (this.color == CardColor.ATOUT && this.value == CardValue.AS) ||
                 (this.color == CardColor.ATOUT && this.value == CardValue.VINGT_ET_UN);
     }
 
+    // Test pour vérifier si la carte est un roi
     public boolean isKing() {
         return this.value == CardValue.ROI;
     }
 
+    // Test pour vérifier si la carte est une reine
     public boolean isQueen() {
         return this.value == CardValue.REINE;
     }
 
+     // Test pour vérifier si la carte est un valet
     public boolean isValet() {
         return this.value == CardValue.VALET;
     }
 
+    // Test pour vérifier si la carte est un cavalier
     public boolean isCavalier() {
         return this.value == CardValue.CAVALIER;
     }
 
+
+    // Test pour vérifier si la carte est une petite carte (soit qui ne valide aucune des cartes là haut)
     public boolean isPetiteCarte() {
         // Vérifier si ce n'est pas un Roi, une Reine, un Cavalier, un Valet, ni un Bout
         boolean isFigure = this.value == CardValue.ROI || this.value == CardValue.REINE ||

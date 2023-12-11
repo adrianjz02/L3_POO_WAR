@@ -25,57 +25,6 @@ public class Player {
         this.score = 0;
     }
 
-    public String choisirActionPourLeChien() {
-        System.out.print("Choisissez l'action: Distribuer (D) ou Ajouter au Chien (C): ");
-        String action = scanner.nextLine();
-        return action;
-    }
-
-    public int askDogSize(int numPlayers) {
-
-        int dogSize;
-
-        while (true) {
-            System.out.println(this.getName() + " veuillez choisir la taille du chien. ");
-            if (numPlayers == 3) {
-                System.out.print("Options valides: 3, 6, 9 : ");
-            } else if (numPlayers == 4) {
-                System.out.print("Options valides: 2, 6, 10 : ");
-            }
-
-            dogSize = scanner.nextInt();
-            scanner.nextLine(); // Lire et ignorer le caractère de fin de ligne restant
-
-            // Vérifiez si la taille du chien est valide en fonction du nombre de joueurs
-            if ((numPlayers == 3 && (dogSize == 3 || dogSize == 6 || dogSize == 9)) ||
-                    (numPlayers == 4 && (dogSize == 2 || dogSize == 6 || dogSize == 10))) {
-                break; // Taille valide, sortir de la boucle
-            } else {
-                System.out.println("Taille du chien invalide. Veuillez réessayer.");
-            }
-        }
-        return dogSize;
-    }
-
-    public String demanderMise(String[] optionsDeMise, int miseMaxIndex) {
-        System.out.println();
-        showHand();
-        System.out.print(getName() + ", choisissez votre mise (Passer, Petite, Garde, Garde sans, Garde contre): ");
-        String mise;
-        int miseIndex;
-
-        do {
-            mise = scanner.nextLine();
-            miseIndex = Arrays.asList(optionsDeMise).indexOf(mise);
-
-            if (miseIndex <= miseMaxIndex && miseIndex != 0) {
-                System.out.println("Vous devez choisir une mise supérieure ou passer.");
-            }
-        } while (miseIndex <= miseMaxIndex && miseIndex != 0);
-
-        return mise;
-    }
-
     // Méthode pour ajouter une carte à la main du joueur.
     public void addCardsToHand(Card[] cards) {
         for (Card card : cards) {
@@ -154,8 +103,64 @@ public class Player {
         this.score += points;
     }
 
+    // On demande la mise du joueur
+    public String demanderMise(String[] optionsDeMise, int miseMaxIndex) {
+        System.out.println();
+        showHand();
+        System.out.print(getName() + ", choisissez votre mise (Passer, Petite, Garde, Garde sans, Garde contre): ");
+        String mise;
+        int miseIndex;
+
+        do {
+            mise = scanner.nextLine();
+            miseIndex = Arrays.asList(optionsDeMise).indexOf(mise);
+
+            if (miseIndex <= miseMaxIndex && miseIndex != 0) {
+                System.out.println("Vous devez choisir une mise supérieure ou passer.");
+            }
+        } while (miseIndex <= miseMaxIndex && miseIndex != 0);
+
+        return mise;
+    }
+
+    // On demande au joueur si il veut distribuer ou donner au chien
+    public String choisirActionPourLeChien() {
+        System.out.print("Choisissez l'action: Distribuer (D) ou Ajouter au Chien (C): ");
+        String action = scanner.nextLine();
+        return action;
+    }
+
+    // On demande au jouer la taille du chien en fonction du nombre de joueur
+    public int askDogSize(int numPlayers) {
+
+        int dogSize;
+
+        while (true) {
+            System.out.println(this.getName() + " veuillez choisir la taille du chien. ");
+            if (numPlayers == 3) {
+                System.out.print("Options valides: 3, 6, 9 : ");
+            } else if (numPlayers == 4) {
+                System.out.print("Options valides: 2, 6, 10 : ");
+            }
+
+            dogSize = scanner.nextInt();
+            scanner.nextLine(); // Lire et ignorer le caractère de fin de ligne restant
+
+            // Vérifiez si la taille du chien est valide en fonction du nombre de joueurs
+            if ((numPlayers == 3 && (dogSize == 3 || dogSize == 6 || dogSize == 9)) ||
+                    (numPlayers == 4 && (dogSize == 2 || dogSize == 6 || dogSize == 10))) {
+                break; // Taille valide, sortir de la boucle
+            } else {
+                System.out.println("Taille du chien invalide. Veuillez réessayer.");
+            }
+        }
+        return dogSize;
+    }
+
+    // Demande au joueur quelle carte il souhaite défausser
     public Card choisirUneCarteADefausser() {
-        System.out.print(this.getName() + ", entrez la carte que vous souhaitez défausser (par exemple, 'C5' pour le 5 de coeur) : ");
+        System.out.print(this.getName()
+                + ", entrez la carte que vous souhaitez défausser (par exemple, 'C5' pour le 5 de coeur) : ");
 
         while (true) {
             String choix = scanner.nextLine();
@@ -171,8 +176,10 @@ public class Player {
         }
     }
 
+    // Choisi une carte qu'il souhaite jouer
     public Card choisirUneCarte() {
-        System.out.print(this.getName() + ", entrez la carte que vous souhaitez choisir (par exemple, 'C5' pour le 5 de coeur) : ");
+        System.out.print(this.getName()
+                + ", entrez la carte que vous souhaitez choisir (par exemple, 'C5' pour le 5 de coeur) : ");
 
         while (true) {
             String choix = scanner.nextLine();
@@ -188,6 +195,8 @@ public class Player {
         }
     }
 
+    // Vérifie si le joueur possède bien la couleur demander dans son deck pour
+    // pouvoir jouer
     public boolean checkColor(CardColor color) {
         return this.hand.stream().anyMatch(card -> card.color() == color);
     }
@@ -209,13 +218,10 @@ public class Player {
                     return colorCompare;
                 }
 
-                // If colors are the same, compare by value
-                // For ATOUT, we want reverse order
-                if (c1.color() == CardColor.ATOUT) {
-                    return Integer.compare(c2.value().ordinal(), c1.value().ordinal());
-                } else {
-                    return Integer.compare(c2.value().ordinal(), c1.value().ordinal());
-                }
+                // Si les couleurs sont identidiques on compare par leur valeur
+
+                return Integer.compare(c2.value().ordinal(), c1.value().ordinal());
+
             }
         });
     }
@@ -224,14 +230,14 @@ public class Player {
     // deux cartes au hasard au joueur de droite.
     public List<Card> choisirDeuxCartes() {
         List<Card> chosenCards = new ArrayList<>();
-    
+
         System.out.println(this.getName() + ", choisissez deux cartes à donner : ");
         while (chosenCards.size() < 2) {
             Card card = choisirUneCarte();
             if (!chosenCards.contains(card)) { // Assurez-vous que la carte n'est pas déjà choisie
                 chosenCards.add(card);
                 this.hand.remove(card); // Retirer la carte choisie de la main
-    
+
                 if (chosenCards.size() < 2) {
                     System.out.print("Choisissez une autre carte : ");
                 }
@@ -239,8 +245,8 @@ public class Player {
                 System.out.print("Cette carte a déjà été choisie, veuillez en choisir une autre : ");
             }
         }
-    
+
         return chosenCards;
     }
-    
+
 }
