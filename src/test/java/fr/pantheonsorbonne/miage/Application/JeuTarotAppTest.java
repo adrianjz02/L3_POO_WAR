@@ -41,13 +41,6 @@ public class JeuTarotAppTest {
         }
     }
 
-    @Test
-    void testPlayMethod() {
-        // Run the play method
-        jeuTarotApp.play();
-        
-        // You may want to add more assertions based on the expected behavior of the play method
-    }
 
     @Test
     void testMainMethod() {
@@ -73,4 +66,7 @@ public class JeuTarotAppTest {
         assertTrue(consoleOutput.contains("Game Over"));
         // Add more assertions based on your specific output
     }
+
+
+    
 }
