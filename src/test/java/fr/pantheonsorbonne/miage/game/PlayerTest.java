@@ -75,5 +75,6 @@ class PlayerTest {
         
         assertEquals(2, player.choisirDeuxCartes().size());
     }
+    
 }
 
