@@ -1,8 +1,10 @@
 package fr.pantheonsorbonne.miage.engine;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,6 +14,7 @@ import fr.pantheonsorbonne.miage.Cartes.CardValue;
 import fr.pantheonsorbonne.miage.Deck.Deck;
 import fr.pantheonsorbonne.miage.Deck.RandomDeck;
 import fr.pantheonsorbonne.miage.JeuTarot.TarotEngine;
+import fr.pantheonsorbonne.miage.Joueurs.DumbPlayer;
 import fr.pantheonsorbonne.miage.Joueurs.Player;
 
 import java.util.ArrayList;
@@ -20,12 +23,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TarotEngineTest {
 
-    private Deck deck = new RandomDeck(); // ou une autre implémentation de Deck
+    private static Deck deck = new RandomDeck(); // ou une autre implémentation de Deck
+    private static TarotEngineImpl tarotEngine;
+
+    @BeforeAll
+    public static void setUp() {
+        tarotEngine = new TarotEngineImpl(deck, 10);
+        // Vous pouvez ajouter les joueurs ici si chaque test a besoin des mêmes joueurs
+        // Sinon, ajoutez les joueurs dans chaque méthode de test ou utilisez
+        // @BeforeEach pour les initialisations qui doivent être répétées avant chaque
+        // test
+    }
 
     @Test
     public void testCalculerScoreManche() {
@@ -36,9 +50,6 @@ public class TarotEngineTest {
         players.add(new Player("Defenseur1"));
         players.add(new Player("Defenseur2"));
         players.add(new Player("Defenseur3"));
-
-        // Instance de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         // Simuler un scénario de jeu
         double nombreDePoints = 60; // Points obtenus par l'attaquant
@@ -67,8 +78,6 @@ public class TarotEngineTest {
                 new Card(CardColor.SPADES, CardValue.VALET),
                 new Card(CardColor.SPADES, CardValue.DIX));
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
-
         double expectedPoints = 4.5 + +4.5 + 3.5 + 2.5 + 1.5 + 0.5; // Selon vos règles de jeu
         double actualPoints = tarotEngine.compteurPoints(deckPli);
 
@@ -78,8 +87,6 @@ public class TarotEngineTest {
     @Test
     public void testAllPlayersHaveSameNumberOfCards() {
         List<Player> players = Arrays.asList(new Player("Joueur1"), new Player("Joueur2"), new Player("Joueur3"));
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         for (Player player : players) {
             player.addCardsToHand(deck.getCards(10));
@@ -104,7 +111,6 @@ public class TarotEngineTest {
         players.add(p1);
         players.add(p2);
         players.add(p3);
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         assertFalse(tarotEngine.ontTousLeMemeNombreDeCartes(players),
                 "Les joueurs ne devraient pas avoir le même nombre de cartes");
@@ -112,7 +118,6 @@ public class TarotEngineTest {
 
     @Test
     public void testPlayersListIsNull() {
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         assertThrows(IllegalArgumentException.class, () -> tarotEngine.ontTousLeMemeNombreDeCartes(null),
                 "La liste des joueurs ne peut pas être null");
@@ -120,7 +125,6 @@ public class TarotEngineTest {
 
     @Test
     public void testPlayersListIsEmpty() {
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         assertThrows(IllegalArgumentException.class,
                 () -> tarotEngine.ontTousLeMemeNombreDeCartes(Collections.emptyList()),
@@ -134,7 +138,6 @@ public class TarotEngineTest {
         Player chien = new Player("Chien");
 
         // Création de l'instance de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
 
         // Nombre de cartes à ajouter
         int nombreCartes = 6;
@@ -155,8 +158,6 @@ public class TarotEngineTest {
                 new Card(CardColor.HEARTS, CardValue.ROI),
                 new Card(CardColor.ATOUT, CardValue.VINGT_ET_UN), // Supposons que c'est aussi un bout
                 new Card(CardColor.DIAMONDS, CardValue.REINE));
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         int expectedBouts = 2; // Le nombre attendu de bouts dans le deck
         int actualBouts = tarotEngine.countBouts(pli);
@@ -179,7 +180,6 @@ public class TarotEngineTest {
 
         List<Card> deckPliDefenseur = new ArrayList<>(); // Créez un pli pour les défenseurs sans le Petit
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 10);
         tarotEngine.verifPetitAuBout(players.size(), attaquant, attaquant, players, deckPliAttaquant, deckPliDefenseur);
 
         // Vérifications
@@ -193,8 +193,6 @@ public class TarotEngineTest {
         pli.add(new Card(CardColor.ATOUT, CardValue.AS));
         pli.add(new Card(CardColor.ATOUT, CardValue.VINGT));
         pli.add(new Card(CardColor.ATOUT, CardValue.DIX_HUIT));
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         // Vérifiez si toutes les cartes du pli sont des atouts
         boolean result = tarotEngine.areAllCardsAtouts(pli);
@@ -210,8 +208,6 @@ public class TarotEngineTest {
         pli.add(new Card(CardColor.ATOUT, CardValue.AS));
         pli.add(new Card(CardColor.DIAMONDS, CardValue.ROI));
         pli.add(new Card(CardColor.ATOUT, CardValue.DIX_HUIT));
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         // Vérifiez si toutes les cartes du pli sont des atouts
         boolean result = tarotEngine.areAllCardsAtouts(pli);
@@ -236,8 +232,6 @@ public class TarotEngineTest {
         DeckPetitAtout.add(new Card(CardColor.ATOUT, CardValue.REINE));
         DeckPetitAtout.add(new Card(CardColor.ATOUT, CardValue.AS)); // Carte de référence
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Vérifications
         assertEquals(true, tarotEngine.hasHigherAtout(referenceCard, DeckAtout),
                 "Il y a des Atouts supérieurs dans le deck, la méthode devrait renvoyer true");
@@ -260,8 +254,6 @@ public class TarotEngineTest {
 
         int tailleInitialeDeck = deck.size(); // Taille initiale du deck
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Exécution de la méthode
         tarotEngine.reconstitutionDeck(players, deck, chien);
 
@@ -279,8 +271,6 @@ public class TarotEngineTest {
         mises.put(new Player("Joueur2"), "Passer");
         mises.put(new Player("Joueur3"), "Passer");
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Exécution de la méthode
         boolean redistributionNecessaire = tarotEngine.verifierEtRedistribuerSiNecessaire(mises);
 
@@ -294,8 +284,6 @@ public class TarotEngineTest {
         mises.put(new Player("Joueur1"), "Passer");
         mises.put(new Player("Joueur2"), "Petite");
         mises.put(new Player("Joueur3"), "Passer");
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         // Exécution de la méthode
         boolean redistributionNecessaire = tarotEngine.verifierEtRedistribuerSiNecessaire(mises);
@@ -317,8 +305,6 @@ public class TarotEngineTest {
         mises.put(joueur2, "Garde");
         mises.put(joueur3, "Passer");
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Appeler la méthode
         Player joueurAvecLaPlusGrosseMise = tarotEngine.trouverJoueurAvecLaPlusGrosseMise(mises);
 
@@ -332,9 +318,6 @@ public class TarotEngineTest {
 
         // Création d'un joueur
         Player joueur = new Player("Joueur1");
-
-        // Initialisation de TarotEngine avec le deck fictif
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         int nombreCartesADistribuer = 5;
         int tailleInitialeMain = joueur.getLength();
@@ -355,8 +338,6 @@ public class TarotEngineTest {
         Player joueur3 = new Player("Joueur3");
         List<Player> players = new ArrayList<>(Arrays.asList(joueur1, joueur2, joueur3));
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Exécution de la méthode
         tarotEngine.moveFirstToLast(players);
 
@@ -376,8 +357,6 @@ public class TarotEngineTest {
         players.add(joueur1);
         players.add(joueur2);
         players.add(joueur3);
-
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         // Joueur2 devrait être déplacé en première position
         tarotEngine.movePlayerToFirst(joueur2, players);
@@ -405,9 +384,6 @@ public class TarotEngineTest {
         List<Player> joueurs = new ArrayList<>();
         joueurs.add(attaquant);
         joueurs.add(defenseur);
-
-        // Initialisation de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         List<Card> pliAttaquant = new ArrayList<>();
         List<Card> pliDefenseur = new ArrayList<>();
@@ -442,9 +418,6 @@ public class TarotEngineTest {
         joueurs.add(attaquant);
         joueurs.add(defenseur1);
         joueurs.add(defenseur2);
-
-        // Initialisation de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         List<Card> pliAttaquant = new ArrayList<>();
         List<Card> pliDefenseur = new ArrayList<>();
@@ -486,9 +459,6 @@ public class TarotEngineTest {
         joueurs.add(defenseur);
         joueurs.add(defenseur2);
 
-        // Initialisation de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         List<Card> pliAttaquant = new ArrayList<>();
         List<Card> pliDefenseur = new ArrayList<>();
 
@@ -523,9 +493,6 @@ public class TarotEngineTest {
         joueurs.add(attaquant);
         joueurs.add(defenseur);
         joueurs.add(defenseur2);
-
-        // Initialisation de TarotEngine
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
 
         List<Card> pliAttaquant = new ArrayList<>();
         List<Card> pliDefenseur = new ArrayList<>();
@@ -564,8 +531,6 @@ public class TarotEngineTest {
         deckPliDefenseur.add(new Card(CardColor.SPADES, CardValue.DEUX)); // Autre carte
         deckPliDefenseur.add(new Card(CardColor.DIAMONDS, CardValue.CAVALIER)); // Autre carte
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Exécution de la méthode
         tarotEngine.verifExcuseAuBout(playerList.size(), attaquant, gagnantDernierPli, playerList, deckPliAttaquant,
                 deckPliDefenseur);
@@ -600,8 +565,6 @@ public class TarotEngineTest {
         deckPliDefenseur.add(new Card(CardColor.SPADES, CardValue.ROI)); // Autre carte
         deckPliDefenseur.add(new Card(CardColor.CLUBS, CardValue.REINE)); // Autre carte
 
-        TarotEngine tarotEngine = new TarotEngineImpl(deck, 1);
-
         // Exécution de la méthode
         tarotEngine.verifExcuseAuBout(playerList.size(), attaquant, gagnantDernierPli, playerList, deckPliAttaquant,
                 deckPliDefenseur);
@@ -613,16 +576,91 @@ public class TarotEngineTest {
                 "Le pli des défenseurs ne doit pas contenir l'Excuse");
     }
 
+    @Test
+    public void testSeDefausser() {
+        // Créer une liste de cartes pour le joueur, incluant un Bout et un Roi
+        List<Card> hand = new ArrayList<>();
+        hand.add(new Card(CardColor.ATOUT, CardValue.AS)); // Bout
+        hand.add(new Card(CardColor.ATOUT, CardValue.DEUX)); // Atout ordinaire
+        hand.add(new Card(CardColor.HEARTS, CardValue.ROI)); // Roi
+        MockPlayer joueur = new MockPlayer("Joueur", hand);
+
+        // Créer une liste pour recevoir les cartes défaussées
+        List<Card> pliJoueur = new ArrayList<>();
+
+        // Simuler le processus de défausse sans interaction utilisateur
+        joueur.setDefausseSimulation(new Card[] {
+                new Card(CardColor.ATOUT, CardValue.DEUX), // Prétend que le joueur choisit un atout ordinaire à
+                                                           // défausser
+                // Notez que l'ordre des cartes à défausser est important si vous répétez des
+                // cartes
+        });
+
+        // Exécuter la méthode de défausse
+        // Utilisez votre implémentation concrète avec les
+        // dépendances nécessaires
+        tarotEngine.seDefausser(joueur, 1, pliJoueur, new Scanner(System.in));
+
+        // Vérifier les résultats
+        assertEquals(1, pliJoueur.size(), "Une carte doit être défaussée");
+        assertTrue(pliJoueur.contains(new Card(CardColor.ATOUT, CardValue.DEUX)),
+                "La carte défaussée doit être l'Atout DEUX");
+        assertFalse(joueur.getHand().contains(new Card(CardColor.ATOUT, CardValue.DEUX)),
+                "Le joueur ne doit plus avoir l'Atout DEUX");
+    }
+
+    @Test
+    public void testPlay() {
+
+        List<DumbPlayer> DumbPlayerList = new ArrayList<>();
+
+        DumbPlayer p1 = new DumbPlayer("Adrian");
+        DumbPlayer p2 = new DumbPlayer("Nino ");
+        DumbPlayer p3 = new DumbPlayer("Angel");
+
+        DumbPlayerList.add(p1);
+        DumbPlayerList.add(p2);
+        DumbPlayerList.add(p3);
+
+        for (DumbPlayer player : DumbPlayerList) {
+            tarotEngine.addPlayer(player); // Ajouter chaque joueur à l'instance de TarotEngineImpl
+        }
+
+        // Exécutez la méthode play
+        tarotEngine.play();
+
+        // Vérifiez les résultats attendus
+        for (DumbPlayer player : DumbPlayerList) {
+            assertNotNull(player.getScore());
+            // Autres assertions pour vérifier le bon fonctionnement de play()
+        }
+
+    }
 
     // Classe MockPlayer pour simuler un joueur
     private static class MockPlayer extends Player {
         private List<Card> hand;
+        private Card[] defausseSimulation;
 
         public MockPlayer(String name, List<Card> hand) {
             super(name);
             this.hand = hand;
         }
 
+        public void setDefausseSimulation(Card[] defausseSimulation) {
+            this.defausseSimulation = defausseSimulation;
+        }
+
+        @Override
+        public Card choisirUneCarteADefausser() {
+            // Simule le choix d'une carte à défausser selon l'ordre prédéfini
+            if (defausseSimulation.length > 0) {
+                Card carte = defausseSimulation[0];
+                defausseSimulation = Arrays.copyOfRange(defausseSimulation, 1, defausseSimulation.length);
+                return carte;
+            }
+            return null;
+        }
 
         @Override
         public Card choisirUneCarte() {
@@ -658,13 +696,21 @@ public class TarotEngineTest {
     }
 
     private static class TarotEngineImpl extends TarotEngine {
+        private List<Player> initialPlayers;
+
         public TarotEngineImpl(Deck deck, int nombreDeManche) {
             super(deck, nombreDeManche);
+            initialPlayers = new ArrayList<>();
+
+        }
+
+        public void addPlayer(Player player) {
+            initialPlayers.add(player);
         }
 
         @Override
         protected List<Player> getInitialPlayers() {
-            throw new UnsupportedOperationException("Unimplemented method 'getInitialPlayers'");
+            return initialPlayers;
         }
     }
 }

@@ -159,5 +159,6 @@ class PlayerTest {
 
         assertEquals(card, carteChoisie);
     }
+    
 }
 

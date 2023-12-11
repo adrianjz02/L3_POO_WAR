@@ -21,8 +21,8 @@ public abstract class TarotEngine {
 
     static Scanner scanner = new Scanner(System.in);
 
-    protected TarotEngine(Deck deck2, int nombreDeManche) {
-        this.deck = deck2;
+    protected TarotEngine(Deck deck, int nombreDeManche) {
+        this.deck = deck;
         this.nombreDeManche = nombreDeManche;
     }
 
