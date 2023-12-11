@@ -50,12 +50,17 @@ public abstract class TarotEngine {
 
                 // Vérifier la taille du chien avant de demander les mises
                 if (dogSize != dog.getLength()) {
-                    System.out.println("La taille du chien ne correspond pas à la taille du chien demandé, redistribution nécessaire.");
+                    System.out.println(
+                            "La taille du chien ne correspond pas à la taille du chien demandé, redistribution nécessaire.");
                     reconstitutionDeck(playerList, deck, dog); // Méthode de redistribution
                     moveFirstToLast(playerList); // Le donneur devient celui qui est à droite du donneur.
-                    System.out.println(deck.size());
                     continue; // Passez à la prochaine itération de la boucle do-while pour redistribuer
-
+                } else if (!ontTousLeMemeNombreDeCartes(playerList)) {
+                    System.out.println(
+                            "Les joueurs ne possèdent pas le même nombre de carte.");
+                    reconstitutionDeck(playerList, deck, dog);
+                    moveFirstToLast(playerList);
+                    continue;
                 }
 
                 // Demander les mises
@@ -85,8 +90,8 @@ public abstract class TarotEngine {
             while ((deckPliAttaquant.size() + deckPliDefenseur.size()) != 78) {
 
                 Player gagnantPli = gererPli(playerList, attaquant, deckPliAttaquant, deckPliDefenseur);
-                afficherPli(deckPliAttaquant, "pli de l'attaquant");
-                afficherPli(deckPliDefenseur, "pli des défenseurs");
+                // afficherPli(deckPliAttaquant, "pli de l'attaquant");
+                // afficherPli(deckPliDefenseur, "pli des défenseurs");
                 movePlayerToFirst(gagnantPli, playerList);
 
                 if ((deckPliAttaquant.size() + deckPliDefenseur.size()) == 78) {
@@ -94,7 +99,6 @@ public abstract class TarotEngine {
                     verifExcuseAuBout(numPlayers, attaquant, gagnantPli, playerList, deckPliAttaquant,
                             deckPliDefenseur);
                 }
-             
 
             }
 
@@ -108,7 +112,23 @@ public abstract class TarotEngine {
             deck.addAllCards(deckPliAttaquant);
             deck.addAllCards(deckPliDefenseur);
 
-        }  
+        }
+    }
+
+    public boolean ontTousLeMemeNombreDeCartes(List<Player> joueurs) {
+        if (joueurs == null || joueurs.isEmpty()) {
+            throw new IllegalArgumentException("La liste des joueurs ne peut pas être vide ou null.");
+        }
+
+        int tailleInitiale = joueurs.get(0).getLength();
+
+        for (Player joueur : joueurs) {
+            if (joueur.getLength() != tailleInitiale) {
+                return false; // Un joueur a un nombre de cartes différent
+            }
+        }
+
+        return true; // Tous les joueurs ont le même nombre de cartes
     }
 
     public void calculerScoreManche(double nombreDePoints, int nombreDeBouts, String contrat, List<Player> playerList,
@@ -281,11 +301,11 @@ public abstract class TarotEngine {
     }
 
     public Player gererPli(List<Player> joueurs, Player attaquant, List<Card> pliAttaquant, List<Card> pliDefenseur) {
-        
+
         List<Card> pli = new ArrayList<>();
         CardColor couleurDemandee = null;
         Card carteLaPlusForte = null;
-        Player gagnantDuPli = null;
+        Player gagnantDuPli = new Player(null);
         boolean atoutJoue = false;
         boolean excuseJouee = false;
         Player joueurExcuse = new Player(null); // Joueur ayant joué l'excuse
@@ -296,7 +316,7 @@ public abstract class TarotEngine {
             Card carteJouee;
             do {
                 carteValide = true; // Présumer que le joueur va jouer une carte valide
-                joueur.showHandSorted();
+                // joueur.showHandSorted();
                 carteJouee = joueur.choisirUneCarte();
 
                 if (couleurDemandee == null) {
@@ -318,10 +338,12 @@ public abstract class TarotEngine {
                         joueurExcuse = joueur;
                     } else {
                         if (joueur.checkColor(couleurDemandee)) {
+
                             if (carteJouee.color() != couleurDemandee) {
                                 System.out.println(joueur.getName() + ", VOUS DEVEZ JOUER UNE CARTE DE COULEUR "
                                         + couleurDemandee + ".");
                                 carteValide = false;
+
                             } else if ((hasHigherAtout(carteLaPlusForte, joueur.getHand())
                                     && (carteJouee.color() == CardColor.ATOUT))
                                     && carteJouee.compareTo(carteLaPlusForte) <= 0) {
@@ -329,26 +351,27 @@ public abstract class TarotEngine {
                                         + carteLaPlusForte + ".");
                                 carteValide = false;
                             }
+
                         } else if (!joueur.checkColor(couleurDemandee) && joueur.checkColor(CardColor.ATOUT)) {
                             // Le joueur n'a pas la couleur demandée mais a des atouts
                             if (carteJouee.color() != CardColor.ATOUT) {
                                 System.out.println(joueur.getName()
                                         + ", vous n'avez pas la couleur jouée par le premier joueur et vous possédez un atout.");
                                 carteValide = false;
+
                             } else if ((hasHigherAtout(carteLaPlusForte, joueur.getHand())
                                     && (carteJouee.color() == CardColor.ATOUT))
                                     && carteJouee.compareTo(carteLaPlusForte) <= 0) {
                                 System.out.println(joueur.getName() + ", VOUS DEVEZ JOUER UN ATOUT SUPÉRIEUR À "
                                         + carteLaPlusForte + ".");
                                 carteValide = false;
+
                             }
                         }
                     }
                 }
 
             } while (!carteValide);
-
-            
 
             if (carteJouee.color() == CardColor.ATOUT) {
                 atoutJoue = true;
@@ -362,7 +385,7 @@ public abstract class TarotEngine {
 
             joueur.removeCardFromHand(carteJouee);
             pli.add(carteJouee);
-            
+
         }
 
         System.out.println(gagnantDuPli.getName() + " a gagné le pli !\nLe pli : "
@@ -508,8 +531,9 @@ public abstract class TarotEngine {
                 System.out.println("\nVoici le chien : " + dog.getHand());
                 cartesDuChien = dog.emptyHand();
                 joueurAvecLaPlusGrosseMise.addAllCardsToHand(cartesDuChien);
-                System.out.println(joueurAvecLaPlusGrosseMise.getName() + " a reçu les cartes du chien pour sa mise de "
-                        + miseMax + "\n");
+                System.out
+                        .println(joueurAvecLaPlusGrosseMise.getName() + " a reçu les cartes du chien pour sa mise de : "
+                                + miseMax + "\n");
 
                 // Demander à l'attaquant de se défausser de cartes équivalant à la taille du
                 // chien
@@ -560,7 +584,7 @@ public abstract class TarotEngine {
         for (Player joueur : playerList) {
             List<Card> playerCards = joueur.emptyHand(); // Récupère les cartes du joueur
             deck.addAllCards(playerCards);
-            }
+        }
         // Ne pas oublier de récupérer les cartes du chien également
         List<Card> dogCards = dog.emptyHand();
         deck.addAllCards(dogCards);
@@ -632,40 +656,6 @@ public abstract class TarotEngine {
         int nombreTotalCartes = deck.size();
 
         while (!deck.isEmpty()) {
-            // Si le chien a totalement été distribué on distribue le reste des cartes sans
-            // demander
-            if (compteur_chien == dogSize) {
-                System.out.println(
-                        "La taille du chien est au maximum. Le reste des cartes vont être distribuer au joueurs.");
-
-                while (!deck.isEmpty()) {
-                    distribuerAuxJoueurs(players.get(index_joueur), 3);
-                    index_joueur = (index_joueur + 1) % players.size();
-                    totalCartesDistribuees += 3;
-
-                    // Gérer les cas spéciaux pour la distribution des dernières cartes
-                    if ((deck.size() == 3 && dogSize == 3) || (deck.size() == 6 && dogSize == 9)) {
-                        int cartesADistribuer = deck.size() == 3 ? 1 : 2;
-                        for (int i = 0; i < 3; i++) {
-                            // Distribuer le nombre approprié de cartes au joueur actuel
-                            distribuerAuxJoueurs(players.get((index_joueur + i) % players.size()), cartesADistribuer);
-                        }
-                        break; // Sortie de la boucle après la distribution des dernières cartes
-                    } else if ((deck.size() == 4 && dogSize == 2) || (deck.size() == 8 && dogSize == 10)) {
-                        int cartesADistribuer = deck.size() == 4 ? 1 : 2;
-                        for (int i = 0; i < 4; i++) {
-                            // Distribuer le nombre approprié de cartes au joueur actuel
-                            distribuerAuxJoueurs(players.get((index_joueur + i) % players.size()), cartesADistribuer);
-                        }
-                        break; // Sortie de la boucle après la distribution des dernières cartes
-                    }
-
-                }
-
-                break; // Sortie de la boucle principale une fois que toutes les cartes sont
-                       // distribuées
-            }
-
             String askDonneur = donneur.choisirActionPourLeChien();
 
             /**
@@ -706,7 +696,7 @@ public abstract class TarotEngine {
                 break; // Sortie de la boucle après la distribution des dernières cartes
             } else if ((deck.size() == 4 && dogSize == 2) || (deck.size() == 8 && dogSize == 10)) {
                 int cartesADistribuer = deck.size() == 4 ? 1 : 2;
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     // Distribuer le nombre approprié de cartes au joueur actuel
                     distribuerAuxJoueurs(players.get((index_joueur + i) % players.size()), cartesADistribuer);
                 }
