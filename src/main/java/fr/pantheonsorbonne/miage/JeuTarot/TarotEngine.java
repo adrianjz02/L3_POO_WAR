@@ -560,7 +560,7 @@ public abstract class TarotEngine {
         }
     }
 
-    private void seDefausser(Player joueur, int nombreDeCartesADefausser, List<Card> pliJoueur, Scanner scanner) {
+    public void seDefausser(Player joueur, int nombreDeCartesADefausser, List<Card> pliJoueur, Scanner scanner) {
         joueur.sortHand();
         joueur.showHandSorted();
         System.out.println(
@@ -580,7 +580,7 @@ public abstract class TarotEngine {
         }
     }
 
-    private void reconstitutionDeck(List<Player> playerList, Deck deck, Player dog) {
+    public void reconstitutionDeck(List<Player> playerList, Deck deck, Player dog) {
         for (Player joueur : playerList) {
             List<Card> playerCards = joueur.emptyHand(); // Récupère les cartes du joueur
             deck.addAllCards(playerCards);
@@ -590,7 +590,7 @@ public abstract class TarotEngine {
         deck.addAllCards(dogCards);
     }
 
-    private boolean verifierEtRedistribuerSiNecessaire(Map<Player, String> mises) {
+    public boolean verifierEtRedistribuerSiNecessaire(Map<Player, String> mises) {
         // Vérifiez si tous les joueurs ont passé
         boolean tousPasses = true;
         for (Map.Entry<Player, String> entry : mises.entrySet()) {
@@ -714,7 +714,7 @@ public abstract class TarotEngine {
         dog.addCardsToHand(deck.getCards(nombreCartes));
     }
 
-    private void distribuerAuxJoueurs(Player player, int nombreCartes) {
+    public void distribuerAuxJoueurs(Player player, int nombreCartes) {
         // Logique de distribution aux joueurs
         player.addCardsToHand(deck.getCards(nombreCartes));
         System.out.println(nombreCartes + " cartes ont été distribué à : " + player.getName());
